@@ -8,10 +8,9 @@ class DownloaderInterface(metaclass=ABCMeta):
         self._file_extension = file_extension
 
     @abstractmethod
-    async def _download(self, link: str) -> str:
+    async def get_path_to_music_file_by_link(self, link: str) -> str:
         pass
 
-    async def download(self, link: str) -> str:
-        return await self._download(link)
-
-
+    @abstractmethod
+    async def _download(self, *args, **kwargs) -> str:
+        pass

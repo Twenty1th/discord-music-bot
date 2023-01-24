@@ -43,14 +43,14 @@ class MusicCommands(commands.Cog):
 
     @commands.command()
     async def play(self, ctx: Context):
-        voice_channel = self.__find_user_in_channels(ctx)
-        if voice_channel:
+        if voice_channel := self.__find_user_in_channels(ctx):
             await self.__connect_bot_to_voice_channel(voice_channel)
             if not self.voice_client.is_playing():
                 link = self.__get_link_from_message(ctx)
-                path = await self.downloader.download(link)
-                self.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg-5.1.2-essentials_build/bin/ffmpeg.exe",
-                                                              source=path))
+                if link:
+                    path = await self.downloader.get_path_to_music_file_by_link(link)
+                    self.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg-5.1.2-essentials_build/bin/ffmpeg.exe",
+                                                                  source=path))
 
     @commands.command()
     async def stop(self, ctx: Context):
