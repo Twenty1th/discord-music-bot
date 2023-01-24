@@ -2,8 +2,8 @@ import asyncio
 import tomllib
 import discord
 
-from src.discord.bot import MyClient, GreetingsVoice
-from src.downloader import Youtube
+from src.discord import Bot, MusicCommands
+from src.downloaders import Youtube
 
 if __name__ == '__main__':
     with open('config.toml', 'rb') as f:
@@ -11,6 +11,6 @@ if __name__ == '__main__':
 
     intents = discord.Intents.default()
     intents.message_content = True
-    client = MyClient(intents=intents, command_prefix="!")
-    asyncio.run(client.add_cog(GreetingsVoice(downloader=Youtube())))
+    client = Bot(intents=intents, command_prefix="!")
+    asyncio.run(client.add_cog(MusicCommands(downloader=Youtube())))
     client.run(data['discord']['token'])
