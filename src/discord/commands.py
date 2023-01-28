@@ -5,35 +5,13 @@ from discord import VoiceChannel
 from discord.ext.commands import Context
 from discord.ext import commands
 
-from src.downloaders.downloader import DownloaderInterface
+from src.discord import Bot
 
 
 class MusicCommands(commands.Cog):
-    voice_client: discord.VoiceClient = None
 
-    def __init__(self, downloader: DownloaderInterface):
-        self.downloader = downloader
-
-    def __bot_connected_to_voice_channel(self, voice_channel: VoiceChannel) -> bool:
-        return self.voice_client.channel.name == voice_channel.name
-
-    @staticmethod
-    def __find_user_in_channels(ctx: Context) -> VoiceChannel | None:
-        for voice_channel in ctx.guild.voice_channels:
-            if ctx.author.name in [member.name for member in voice_channel.members]:
-                logging.info(f"Voice channel: {voice_channel}")
-                return voice_channel
-        else:
-            logging.error("Voice channel is not found")
-            return None
-
-    def __voice_client_is_init(self) -> bool:
-        return self.voice_client is not None
-
-    async def __connect_bot_to_voice_channel(self, voice_channel: VoiceChannel):
-        if not self.__voice_client_is_init() or not self.__bot_connected_to_voice_channel(voice_channel):
-            logging.info(f"Bot connected to {voice_channel.name}")
-            self.voice_client = await voice_channel.connect()
+    def __init__(self, bot: Bot):
+        self.bot = bot
 
     @staticmethod
     def __get_link_from_message(cxt: Context) -> str:
@@ -43,23 +21,25 @@ class MusicCommands(commands.Cog):
 
     @commands.command()
     async def play(self, ctx: Context):
-        if voice_channel := self.__find_user_in_channels(ctx):
-            await self.__connect_bot_to_voice_channel(voice_channel)
-            if not self.voice_client.is_playing():
-                link = self.__get_link_from_message(ctx)
-                if link:
-                    path = await self.downloader.get_path_to_music_file_by_link(link)
-                    self.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg-5.1.2-essentials_build/bin/ffmpeg.exe",
-                                                                  source=path))
+        if not self.bot.bot_is_connected_to_voice_channel():
+            channel: VoiceChannel = self.bot.find_channel_with_author(ctx)
+            self.bot.init_voice_client(channel)
+            await self.bot.connect_to_voice_channel()
+        link: str = self.__get_link_from_message(ctx)
+        path = await self.downloader.get_path_to_music_file_by_link(link)
+        self.bot.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg-5.1.2-essentials_build/bin/ffmpeg.exe", source=path))
 
     @commands.command()
     async def stop(self, ctx: Context):
-        self.voice_client.stop()
+        if self.bot.voice_client.is_playing():
+            self.bot.voice_client.stop()
 
     @commands.command()
     async def pause(self, ctx: Context):
-        self.voice_client.pause()
+        if self.bot.voice_client.is_playing():
+            self.bot.voice_client.pause()
 
     @commands.command()
     async def resume(self, ctx: Context):
-        self.voice_client.resume()
+        if not self.bot.voice_client.is_playing():
+            self.bot.voice_client.resume()

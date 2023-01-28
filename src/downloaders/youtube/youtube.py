@@ -7,6 +7,9 @@ from pytube import YouTube as YouTubeLib, StreamQuery
 
 class Youtube(DownloaderInterface):
 
+    def __init__(self, *, output_path='./music/youtube', file_extension='mp4'):
+        super().__init__(output_path=output_path, file_extension=file_extension)
+
     @staticmethod
     def __get_uuid_from_link(link: str):
         return link.split("?v=")[-1]
