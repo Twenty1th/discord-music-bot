@@ -1,5 +1,7 @@
 import logging
+from typing import Any
 
+import discord
 from discord import VoiceChannel, VoiceClient
 from discord.ext import commands
 from discord.ext.commands import Context
@@ -12,7 +14,11 @@ class BotVoiceClient(VoiceClient):
 class Bot(commands.Bot):
     __voice_client: BotVoiceClient = None
 
-    def init_voice_client(self, channel: VoiceChannel):
+    def __init__(self, command_prefix, *, intents: discord.Intents, token: str, **options: Any):
+        super().__init__(command_prefix, intents=intents, **options)
+        self.token = token
+
+    def init_voice_client(self, channel: VoiceChannel) -> None:
         voice_client = BotVoiceClient(self, channel)
         self.__voice_client = voice_client
 
@@ -22,14 +28,14 @@ class Bot(commands.Bot):
             raise  # TODO
         return self.__voice_client
 
-    def bot_is_connected_to_voice_channel(self):
+    def bot_is_connected_to_voice_channel(self) -> bool:
         return self.__voice_client.is_connected()
 
-    async def connect_to_voice_channel(self):
+    async def connect_to_voice_channel(self) -> None:
         if not self.__voice_client.is_connected():
             await self.__voice_client.voice_connect()
 
-    async def disconnect_from_channel(self):
+    async def disconnect_from_channel(self) -> None:
         if self.__voice_client.is_connected():
             await self.__voice_client.disconnect()
 

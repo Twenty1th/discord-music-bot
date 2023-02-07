@@ -7,7 +7,9 @@ from pytube import YouTube as YouTubeLib, StreamQuery
 
 class Youtube(DownloaderInterface):
 
-    def __init__(self, *, output_path='./music/youtube', file_extension='mp4'):
+    __name = "youtube"
+
+    def __init__(self, *, output_path: str, file_extension: str):
         super().__init__(output_path=output_path, file_extension=file_extension)
 
     @staticmethod

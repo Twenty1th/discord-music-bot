@@ -1,0 +1,2 @@
+class DiscordBotIsNotInit(Exception):
+    pass
