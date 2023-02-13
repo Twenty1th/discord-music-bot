@@ -1,17 +1,21 @@
 import logging
+from typing import Dict
+from urllib.parse import urlparse
 
-import discord
 from discord import VoiceChannel
-from discord.ext.commands import Context
 from discord.ext import commands
+from discord.ext.commands import Context
 
 from src.discord import Bot
+from src.downloaders.downloader import DownloaderInterface
+from src.exceptions import UnknownLink
 
 
 class MusicCommands(commands.Cog):
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot, downloaders: Dict[str, DownloaderInterface]):
         self.bot = bot
+        self.__downloaders: Dict[str, DownloaderInterface] = downloaders
 
     @staticmethod
     def __get_link_from_message(cxt: Context) -> str:
@@ -19,15 +23,29 @@ class MusicCommands(commands.Cog):
         logging.info(message)
         return message.content.split(" ")[-1]
 
+    @staticmethod
+    def __get_service_name_by_link(link: str) -> str:
+        match urlparse(link).netloc:
+            case "www.youtube.com" | "youtube.com":
+                return "youtube"
+
+            case _:
+                raise UnknownLink(f"Unknown link {link}")
+
     @commands.command()
     async def play(self, ctx: Context):
-        if not self.bot.bot_is_connected_to_voice_channel():
+        if not self.bot.is_connected_to_voice_channel():
             channel: VoiceChannel = self.bot.find_channel_with_author(ctx)
-            self.bot.init_voice_client(channel)
+            await self.bot.init_voice_client(channel)
             await self.bot.connect_to_voice_channel()
+
+        if self.bot.voice_client.is_playing():
+            self.bot.voice_client.stop()
+
         link: str = self.__get_link_from_message(ctx)
-        path = await self.downloader.get_path_to_music_file_by_link(link)
-        self.bot.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg-5.1.2-essentials_build/bin/ffmpeg.exe", source=path))
+        service_name = self.__get_service_name_by_link(link)
+        path: str = await self.__downloaders[service_name].download(link)
+        self.bot.play(path)
 
     @commands.command()
     async def stop(self, ctx: Context):

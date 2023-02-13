@@ -1,8 +1,9 @@
 import asyncio
 import os
 
-from src.downloaders.downloader import DownloaderInterface
 from pytube import YouTube as YouTubeLib, StreamQuery
+
+from src.downloaders.downloader import DownloaderInterface
 
 
 class Youtube(DownloaderInterface):
@@ -24,7 +25,7 @@ class Youtube(DownloaderInterface):
         await asyncio.wait([f], timeout=60)
         return f.result()
 
-    async def get_path_to_music_file_by_link(self, link: str) -> str:
+    async def download(self, link: str) -> str:
         filename = f"{self.__get_uuid_from_link(link)}.{self._file_extension}"
         if os.path.exists(f"{self._output_path}/{filename}"):
             return f"{self._output_path}/{filename}"

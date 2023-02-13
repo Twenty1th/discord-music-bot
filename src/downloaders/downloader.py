@@ -16,7 +16,7 @@ class DownloaderInterface(metaclass=ABCMeta):
         return self.__name
 
     @abstractmethod
-    async def get_path_to_music_file_by_link(self, link: str) -> str:
+    async def download(self, link: str) -> str:
         pass
 
     @abstractmethod

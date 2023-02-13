@@ -18,9 +18,8 @@ class Bot(commands.Bot):
         super().__init__(command_prefix, intents=intents, **options)
         self.token = token
 
-    def init_voice_client(self, channel: VoiceChannel) -> None:
-        voice_client = BotVoiceClient(self, channel)
-        self.__voice_client = voice_client
+    async def init_voice_client(self, channel: VoiceChannel) -> None:
+        self.__voice_client = await channel.connect()
 
     @property
     def voice_client(self) -> BotVoiceClient:
@@ -28,12 +27,14 @@ class Bot(commands.Bot):
             raise  # TODO
         return self.__voice_client
 
-    def bot_is_connected_to_voice_channel(self) -> bool:
+    def is_connected_to_voice_channel(self) -> bool:
+        if self.__voice_client is None:
+            return False
         return self.__voice_client.is_connected()
 
     async def connect_to_voice_channel(self) -> None:
-        if not self.__voice_client.is_connected():
-            await self.__voice_client.voice_connect()
+        if not self.voice_client.is_connected():
+            await self.__voice_client.channel.connect()
 
     async def disconnect_from_channel(self) -> None:
         if self.__voice_client.is_connected():
@@ -54,3 +55,7 @@ class Bot(commands.Bot):
         message = cxt.message
         logging.info(message)
         return message.content.split(" ")[-1]
+
+    def play(self, path: str):
+        self.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg-5.1.2-essentials_build/bin/ffmpeg.exe",
+                                                        source=path))
