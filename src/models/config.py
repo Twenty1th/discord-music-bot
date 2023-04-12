@@ -1,9 +1,10 @@
 from typing import List, Dict, Type
 
 from pydantic import BaseModel
-
 from src.downloaders import Youtube
-from src.downloaders.downloader import DownloaderInterface
+
+from config import DEFAULT_PATH, DEFAULT_MUSIC_FILE_EXTENSION
+from src.services.download.modules.downloader import IDownloader
 
 
 class DiscordConfig(BaseModel):
@@ -13,8 +14,8 @@ class DiscordConfig(BaseModel):
 
 class DownloadersItem(BaseModel):
     name: str
-    output_path: str
-    file_extension: str
+    output_path: str = DEFAULT_PATH
+    file_extension: str = DEFAULT_MUSIC_FILE_EXTENSION
 
 
 class Config(BaseModel):
@@ -23,6 +24,6 @@ class Config(BaseModel):
 
 
 class DownloadersList(BaseModel):
-    members: Dict[str, Type[DownloaderInterface]] = {
-            "youtube": Youtube
-        }
+    members: Dict[str, Type[IDownloader]] = {
+        "youtube": Youtube
+    }

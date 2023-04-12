@@ -162,3 +162,4 @@ cython_debug/
 
 ffmpeg-5.1.2-essentials_build
 music
+config.py

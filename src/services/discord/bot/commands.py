@@ -6,16 +6,16 @@ from discord import VoiceChannel
 from discord.ext import commands
 from discord.ext.commands import Context
 
-from src.discord import Bot
-from src.downloaders.downloader import DownloaderInterface
 from src.exceptions import UnknownLink
+from src.services.discord import Bot
+from src.services.download.modules.downloader import IDownloader
 
 
 class MusicCommands(commands.Cog):
 
-    def __init__(self, bot: Bot, downloaders: Dict[str, DownloaderInterface]):
+    def __init__(self, bot: Bot, downloaders: Dict[str, IDownloader]):
         self.bot = bot
-        self.__downloaders: Dict[str, DownloaderInterface] = downloaders
+        self.__downloaders: Dict[str, IDownloader] = downloaders
 
     @staticmethod
     def __get_link_from_message(cxt: Context) -> str:

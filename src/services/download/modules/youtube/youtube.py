@@ -1,13 +1,13 @@
 import asyncio
 import os
 
-from pytube import YouTube as YouTubeLib, StreamQuery
-
-from src.downloaders.downloader import DownloaderInterface
+from src.services.download.modules.downloader import IDownloader
 
 
-class Youtube(DownloaderInterface):
+# from pytube import YouTube as YouTubeLib, StreamQuery
 
+
+class Youtube(IDownloader):
     __name = "youtube"
 
     def __init__(self, *, output_path: str, file_extension: str):

@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class DownloaderInterface(metaclass=ABCMeta):
-
+class IDownloader(metaclass=ABCMeta):
     __name: str = None
 
     def __init__(self, *, output_path, file_extension):
