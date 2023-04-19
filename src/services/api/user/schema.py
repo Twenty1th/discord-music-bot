@@ -1,15 +1,21 @@
 import time
+from typing import List
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field, EmailStr
 
 
-class User(BaseModel):
-    username: str
+class UserSchema(BaseModel):
     email: EmailStr
+    discord_servers: List[int] = []
+    discord_id: int = 0
 
 
-class UserBaseSchema(User):
+class UserUpdateSchema(UserSchema):
+    new_username: str
+
+
+class UserInDB(UserSchema):
     uuid: UUID = Field(default_factory=uuid4)
     hashed_password: str
     created_time: int = Field(default_factory=time.time)

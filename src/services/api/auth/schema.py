@@ -1,5 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
+from src.services.api.user.schema import UserSchema
+
 
 class UserAuthSchema(BaseModel):
     email: EmailStr
@@ -15,3 +17,7 @@ class UserLoginSchema(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class LoginResponse(Token, UserSchema):
+    email: EmailStr

@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  auth:
+    container_name: discord-music-service-auth
+    hostname: auth
+    ports:
+      - "8001:8001"
+    build:
+      dockerfile: docker/api-dockerfile
+    environment:
+      AUTH_SERVICE_PORT: 8001

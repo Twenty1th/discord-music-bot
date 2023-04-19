@@ -6,8 +6,34 @@ DEFAULT_PATH_TO_DOWNLOADERS_MODULES: str = f"src.services.download.modules"
 DEFAULT_MUSIC_FILE_EXTENSION: str = "mp3"
 LIST_OF_MUSIC_SERVICES: List[str] = ['youtube']
 
-# to get a string like this run:
-# openssl rand -hex 32
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 24 * 60 * 7  # One week
+
+from typing import List, Dict, Type
+
+from pydantic import BaseModel
+from src.downloaders import Youtube
+
+from config import DEFAULT_PATH, DEFAULT_MUSIC_FILE_EXTENSION
+from src.services.download.modules.downloader import IDownloader
+
+
+class DiscordConfig(BaseModel):
+    token: str
+    command_prefix: str
+
+
+class DownloadersItem(BaseModel):
+    name: str
+    output_path: str = DEFAULT_PATH
+    file_extension: str = DEFAULT_MUSIC_FILE_EXTENSION
+
+
+class Config(BaseModel):
+    discord: DiscordConfig
+    downloaders: List[DownloadersItem]
+
+
+class DownloadersList(BaseModel):
+    members: Dict[str, Type[IDownloader]] = {
+        "youtube": Youtube
+    }
