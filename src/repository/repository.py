@@ -1,26 +1,25 @@
 from abc import ABC, abstractmethod
 from typing import Any
-from uuid import UUID
 
-from src.services.api.user.schema import UserInDB, UserUpdateSchema
+from src.services.api.user.schema import User
 
 
 class Repository(ABC):
 
     @abstractmethod
-    async def get_user_by_field(self, *, field: str, value: Any) -> UserInDB:
+    async def get_user_by_field(self, *, field: str, value: Any) -> User:
         pass
 
     @abstractmethod
-    async def create_user(self, user: UserInDB) -> UserInDB:
+    async def create_user(self, user: User) -> User:
         pass
 
     @abstractmethod
-    async def update_user(self, new_user: UserUpdateSchema) -> UserInDB:
+    async def update_user(self, *, search_field: str, search_value: Any, **kwargs) -> User:
         pass
 
     @abstractmethod
-    async def delete_user(self, uuid: UUID) -> UUID:
+    async def delete_user(self, uuid: int) -> int:
         pass
 
     @abstractmethod

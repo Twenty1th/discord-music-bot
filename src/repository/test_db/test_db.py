@@ -1,10 +1,23 @@
+from typing import Any
 from uuid import UUID
 
 from src.repository.repository import Repository
-from src.services.api.user.schema import UserUpdateSchema, UserInDB
+from src.services.api.user.schema import User
 
 
 class TestDB(Repository):
+    async def update_user(self, *, search_field: str, search_value: Any, **kwargs) -> User:
+        pass
+
+    async def get_user_by_field(self, *, field: str, value: Any) -> User:
+        pass
+
+    async def connect(self):
+        pass
+
+    async def disconnect(self):
+        pass
+
     fake_users_db = {
         "johndoe": {
             "username": "johndoe",
@@ -19,10 +32,7 @@ class TestDB(Repository):
     def get_user(self, uuid: UUID):
         pass
 
-    def create_user(self, user: UserInDB):
-        pass
-
-    def update_user(self, new_user: UserUpdateSchema):
+    def create_user(self, user: User):
         pass
 
     def delete_user(self, uuid: UUID):

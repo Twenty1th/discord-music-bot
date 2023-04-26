@@ -1,6 +1,9 @@
 FROM python:3.11-slim
 WORKDIR /usr/src/app
-COPY requirements.txt .
+COPY requirements.txt main.py .env .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-CMD uvicorn main:auth --reload --port $AUTH_SERVICE_PORT --host 0.0.0.0
+COPY src/repository src/repository
+COPY src/services/api src/services/api
+COPY src/settings.py src/
+
+CMD uvicorn main:api --reload --port $AUTH_SERVICE_PORT --host 0.0.0.0

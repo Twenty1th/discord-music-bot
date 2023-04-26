@@ -1,11 +1,51 @@
 version: "3.9"
 services:
-  auth:
-    container_name: discord-music-service-auth
-    hostname: auth
+  api:
+    container_name: discord-music-service-api
+    hostname: api-services
     ports:
       - "8001:8001"
     build:
       dockerfile: docker/api-dockerfile
     environment:
       AUTH_SERVICE_PORT: 8001
+    depends_on:
+      - db_test
+
+    networks:
+      - custom
+
+  db_test:
+    container_name: "db_test"
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres_test
+      - POSTGRES_PASSWORD=postgres_test
+      - POSTGRES_DB=postgres_test
+    ports:
+      - "5433:5432"
+    networks:
+      - custom
+
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+
+    networks:
+      - custom
+
+networks:
+  custom:
+    driver: bridge
+
+volumes:
+  db:
+    driver: local

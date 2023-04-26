@@ -3,9 +3,9 @@ from typing import Dict
 
 import discord
 
-from src.exceptions import DiscordBotIsNotInit
 from src.services.api import API
-from src.services.discord import Bot, MusicCommands
+from src.services.api.exceptions import DiscordBotIsNotInit
+# from src.services.discord import Bot, MusicCommands
 from src.services.download.modules.downloader import IDownloader
 
 
