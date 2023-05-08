@@ -13,6 +13,10 @@ class Youtube(IDownloader):
     def __init__(self, *, output_path: str, file_extension: str):
         super().__init__(output_path=output_path, file_extension=file_extension)
 
+    @property
+    def name(self):
+        return self.__name
+
     @staticmethod
     def __get_uuid_from_link(link: str):
         return link.split("?v=")[-1]

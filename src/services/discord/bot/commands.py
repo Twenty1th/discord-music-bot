@@ -6,8 +6,8 @@ from discord import VoiceChannel
 from discord.ext import commands
 from discord.ext.commands import Context
 
-from src.services.api.exceptions import UnknownLink
-# from src.services.discord import Bot
+from core.exceptions import UnknownLink
+# from backend.services.discord import Bot
 from src.services.download.modules.downloader import IDownloader
 
 

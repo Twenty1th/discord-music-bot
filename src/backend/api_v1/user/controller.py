@@ -1,20 +1,18 @@
 from fastapi.security import OAuth2PasswordBearer
 
-from src.repository.repository import Repository
-from src.services.api.exceptions import Unauthorized, UserEmailExists
-from src.services.api.user.schema import User, UserInfo, UserUpdateSchema, UserID
-from src.services.security.jwt import get_user_field_from_token
-from src.settings import get_settings
+from api_v1.schemas import User, UserInfo, UserUpdateSchema, UserID
+from core.exceptions import Unauthorized, UserEmailExists
+from core.security import get_user_field_from_token
+from core.settings import get_settings
+from repository.repository import Repository
 
 settings = get_settings()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login",
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api_v1/v1/auth/login",
                                      scheme_name="JWT")
 
 
 class UserController:
-    SECRET_KEY = settings.auth_secret_key
-    ALGORITHM = settings.algorithm
 
     def __init__(self, db: Repository):
         self.db = db

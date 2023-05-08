@@ -1,16 +1,16 @@
 from typing import Dict
 
-from src.repository.postgres.postgres import Postgres
-from src.repository.repository import Repository
-from src.repository.test_db.test_db import TestDB
-from src.settings import get_settings
+from core.settings import get_settings
+from repository.memory.memory import MemoryDB
+from repository.postgres.postgres import Postgres
+from repository.repository import Repository
 
 settings = get_settings()
 
 
 async def get_db() -> Repository:
     dbs: Dict[str, Repository] = {
-        "dictionary": TestDB(),
+        "dictionary": MemoryDB(),
         "postgres": Postgres()
     }
     db = dbs[settings.repository_name.strip()]

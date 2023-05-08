@@ -9,10 +9,9 @@ class IDownloader(metaclass=ABCMeta):
         self._file_extension = file_extension
 
     @property
+    @abstractmethod
     def name(self):
-        if self.__name is None:
-            raise NotImplemented("Service name is not specified ")
-        return self.__name
+        pass
 
     @abstractmethod
     async def download(self, link: str) -> str:

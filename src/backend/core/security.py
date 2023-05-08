@@ -1,11 +1,12 @@
 from datetime import timedelta
 
 from jose import jwt, JWTError
+from passlib.context import CryptContext
 from pydantic import EmailStr
 
-from src.services.api.exceptions import Unauthorized
-from src.services.api.user.schema import UserID
-from src.settings import get_settings
+from api_v1.schemas import UserID
+from core.exceptions import Unauthorized
+from core.settings import get_settings
 
 settings = get_settings()
 
@@ -24,3 +25,14 @@ def get_user_field_from_token(*, field: str, token: str) -> UserID:
         return field
     except JWTError:
         raise Unauthorized
+
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def verify_password(*, form_password: str, user_hashed_password: str) -> bool:
+    return pwd_context.verify(form_password, user_hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)

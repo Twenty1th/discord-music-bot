@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from src.services.api.user.schema import User
+from api_v1.schemas import User
 
 
 class Repository(ABC):

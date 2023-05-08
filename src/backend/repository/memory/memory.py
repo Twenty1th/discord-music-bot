@@ -1,11 +1,11 @@
 from typing import Any
 from uuid import UUID
 
-from src.repository.repository import Repository
-from src.services.api.user.schema import User
+from api_v1.schemas import User
+from repository.repository import Repository
 
 
-class TestDB(Repository):
+class MemoryDB(Repository):
     async def update_user(self, *, search_field: str, search_value: Any, **kwargs) -> User:
         pass
 

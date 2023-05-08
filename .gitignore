@@ -37,7 +37,7 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test_db / coverage reports
+# Unit memory / coverage reports
 htmlcov/
 .tox/
 .nox/
@@ -121,7 +121,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+src/backend/.env
 .venv
 env/
 venv/
